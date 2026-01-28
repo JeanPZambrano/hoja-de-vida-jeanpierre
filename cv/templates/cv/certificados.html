@@ -1,0 +1,72 @@
+{% extends 'cv/base.html' %}
+
+{% block content %}
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-success"><i class="bi bi-patch-check-fill"></i> Méritos y Reconocimientos</h2>
+        <p class="text-muted">Evidencia documental de mi trayectoria académica y profesional.</p>
+    </div>
+
+    {% if reconocimientos %}
+    <div class="row">
+        <div class="col-12 mb-4">
+            <ul class="nav nav-pills nav-fill gap-2 p-2 bg-light rounded-4 shadow-sm" id="pills-tab" role="tablist" style="overflow-x: auto; flex-wrap: nowrap; white-space: nowrap;">
+                
+                {% for rec in reconocimientos %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill fw-bold border {% if forloop.first %}active{% endif %}" 
+                            id="tab-{{ rec.id }}" 
+                            data-bs-toggle="pill" 
+                            data-bs-target="#content-{{ rec.id }}" 
+                            type="button" 
+                            role="tab" 
+                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                        <i class="bi bi-award me-2"></i>{{ rec.titulo }}
+                    </button>
+                </li>
+                {% endfor %}
+
+            </ul>
+            <div class="text-center mt-2">
+                <small class="text-muted fst-italic"><i class="bi bi-arrow-left-right"></i> Desliza o selecciona un certificado para verlo</small>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="tab-content" id="pills-tabContent">
+                
+                {% for rec in reconocimientos %}
+                <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="content-{{ rec.id }}" role="tabpanel" tabindex="0">
+                    
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0 fw-bold">{{ rec.titulo }}</h5>
+                                <small class="text-white-50">{{ rec.institucion }} | {{ rec.fecha }}</small>
+                            </div>
+                            <a href="{{ rec.archivo.url }}" download class="btn btn-success btn-sm rounded-pill fw-bold">
+                                <i class="bi bi-download me-1"></i> Descargar
+                            </a>
+                        </div>
+                        
+                        <div class="card-body p-0 bg-secondary">
+                            <div style="height: 800px; width: 100%;">
+                                <embed src="{{ rec.archivo.url }}" type="application/pdf" width="100%" height="100%" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5 opacity-50">
+        <i class="bi bi-folder-x fs-1"></i>
+        <p>Aún no hay documentos disponibles.</p>
+    </div>
+    {% endif %}
+
+{% endblock %}

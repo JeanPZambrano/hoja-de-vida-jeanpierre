@@ -1,0 +1,85 @@
+{% extends 'cv/base.html' %}
+
+{% block content %}
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-success"><i class="bi bi-briefcase-fill"></i> Experiencia Laboral</h2>
+        <p class="text-muted">Mi trayectoria profesional y los roles que he desempeñado.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for exp in experiencia %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden hover-card">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        
+                        <div class="col-md-2 text-center mb-3 mb-md-0">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle text-success" style="width: 80px; height: 80px;">
+                                <i class="bi bi-building-fill fs-1"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <h4 class="fw-bold text-dark mb-1">{{ exp.cargo }}</h4>
+                            <h5 class="text-muted fw-normal mb-2">
+                                <i class="bi bi-shop me-1"></i> {{ exp.empresa }}
+                            </h5>
+                            
+                            <div class="border-start border-4 border-success ps-3 mt-3 text-secondary">
+                                {{ exp.descripcion }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 text-md-end mt-3 mt-md-0">
+                            {% if not exp.fecha_fin %}
+                                <span class="badge bg-success rounded-pill px-3 py-2 mb-2 shadow-sm">
+                                    <i class="bi bi-clock-history me-1"></i> Actualmente
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary rounded-pill px-3 py-2 mb-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Finalizado
+                                </span>
+                            {% endif %}
+
+                            <div class="text-muted small fw-bold">
+                                <div class="mb-1">
+                                    <i class="bi bi-calendar-event me-1"></i> {{ exp.fecha_inicio }}
+                                </div>
+                                <div class="text-success">
+                                    <i class="bi bi-arrow-down"></i>
+                                </div>
+                                <div>
+                                    <i class="bi bi-calendar-check me-1"></i> 
+                                    {% if exp.fecha_fin %}
+                                        {{ exp.fecha_fin }}
+                                    {% else %}
+                                        Presente
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+                <div class="card-footer border-0 p-1 {% if not exp.fecha_fin %}bg-success{% else %}bg-secondary{% endif %}"></div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-person-workspace fs-1 text-muted mb-3 d-block"></i>
+            <p class="text-muted">Aún no se ha registrado experiencia laboral.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+    </style>
+{% endblock %}

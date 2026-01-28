@@ -1,0 +1,47 @@
+{% extends 'cv/base.html' %}
+
+{% block content %}
+    <h2 class="section-title"><i class="bi bi-mortarboard"></i> Productos Académicos</h2>
+
+    <div class="row g-4 mt-2">
+        {% for edu in educacion %}
+        <div class="col-md-6">
+            
+            <div class="card h-100 border-0 shadow-sm hover-card bg-white rounded-4 overflow-hidden">
+                <div class="card-header bg-success" style="height: 6px; padding: 0;"></div>
+                
+                <div class="card-body p-4 d-flex flex-column">
+                    
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                           <i class="bi bi-trophy-fill text-success fs-4"></i>
+                        </div>
+                        <div>
+                             <h5 class="card-title fw-bold mb-1 text-dark" style="font-size: 1.2rem;">{{ edu.titulo }}</h5>
+                        </div>
+                    </div>
+
+                    <p class="card-text text-muted flex-grow-1" style="line-height: 1.6;">
+                        {{ edu.descripcion }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 py-5 text-center text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+            <p>Aún no hay productos académicos registrados.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-7px); /* Se mueve hacia arriba */
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.15) !important; /* Sombra verde suave */
+        }
+    </style>
+{% endblock %}
