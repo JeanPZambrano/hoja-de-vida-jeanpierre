@@ -3,7 +3,7 @@ import django
 from django.contrib.auth import get_user_model
 
 # Asegúrate de que este nombre sea igual al de la carpeta que tiene el archivo settings.py
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hoja_de_vida.settings") 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
 User = get_user_model()
