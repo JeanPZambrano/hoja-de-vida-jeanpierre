@@ -31,11 +31,11 @@ class Experiencia(models.Model):
     def __str__(self):
         return f"{self.cargo} en {self.empresa}"
 
-# 3. EDUCACIÓN
+# 3. EDUCACIÓN (MODIFICADO: Sin fecha y con descripción)
 class Educacion(models.Model):
     titulo = models.CharField(max_length=100)
     institucion = models.CharField(max_length=100)
-    fecha_fin = models.DateField(blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción corta")
 
     class Meta:
         verbose_name_plural = "Educación"
@@ -53,7 +53,7 @@ class Proyecto(models.Model):
     def __str__(self):
         return self.titulo
 
-# 5. CERTIFICADOS (El que faltaba)
+# 5. CERTIFICADOS
 class Certificado(models.Model):
     titulo = models.CharField(max_length=100)
     institucion = models.CharField(max_length=100)
@@ -83,7 +83,7 @@ class Producto(models.Model):
     def __str__(self):
         return self.titulo
 
-# 8. REFERENCIAS (El otro que faltaba)
+# 8. REFERENCIAS
 class Referencia(models.Model):
     nombre = models.CharField(max_length=100)
     empresa = models.CharField(max_length=100)

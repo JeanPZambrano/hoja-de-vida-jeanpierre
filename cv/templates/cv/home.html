@@ -110,7 +110,20 @@
                 <div class="card-body px-4">
                     <ul class="list-unstyled">
                         {% for edu in ultima_educacion %}
-                            <li class="mb-2 small"><i class="bi bi-check2 text-info me-1"></i> {{ edu.titulo }}</li>
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-check2-circle text-info me-2 mt-1"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 small">{{ edu.titulo }}</h6>
+                                        {% if edu.descripcion %}
+                                            <p class="text-muted mb-0" style="font-size: 0.8rem; text-align: justify;">{{ edu.descripcion }}</p>
+                                        {% endif %}
+                                        <small class="text-secondary" style="font-size: 0.75rem;">{{ edu.institucion }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted small">Sin registros.</li>
                         {% endfor %}
                     </ul>
                     <a href="{% url 'educacion' %}" class="btn btn-outline-secondary btn-sm rounded-pill w-100 mt-2">Ver historial</a>
