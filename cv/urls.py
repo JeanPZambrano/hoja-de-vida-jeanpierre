@@ -8,5 +8,8 @@ urlpatterns = [
     path('proyectos/', views.proyectos, name='proyectos'),
     path('certificados/', views.certificados, name='certificados'),
     path('garage/', views.garage, name='garage'),
-    path('descargar-pdf/', views.descargar_cv_pdf, name='descargar_cv_pdf'),
+    path('descargar-cv/', views.descargar_cv_pdf, name='descargar_cv_pdf'),
+    
+    # --- AGREGA ESTA LÍNEA ---
+    path('cursos/', views.cursos, name='cursos'),
 ]

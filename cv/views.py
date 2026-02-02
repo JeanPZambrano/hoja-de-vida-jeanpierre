@@ -3,13 +3,13 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.cache import never_cache
 import weasyprint 
 
-# Importamos todos tus modelos
-from .models import Perfil, Experiencia, Educacion, Proyecto, Certificado, Producto
+# Importamos TODOS los modelos, incluido Curso
+from .models import Perfil, Experiencia, Educacion, Proyecto, Certificado, Producto, Curso
 
 def get_contexto_comun():
-    # Esta función ayuda a no repetir código
     return {
         'perfil': Perfil.objects.first(),
     }
@@ -28,6 +28,9 @@ def home(request):
     context['ultimos_certificados'] = Certificado.objects.all().order_by('-id')[:4]
     context['ultimos_productos'] = Producto.objects.filter(disponible=True)[:3]
     
+    # Cursos en el inicio (3 más recientes)
+    context['ultimos_cursos'] = Curso.objects.all().order_by('-fecha')[:3]
+    
     return render(request, 'cv/home.html', context)
 
 def experiencia(request):
@@ -39,7 +42,6 @@ def experiencia(request):
 def educacion(request):
     context = get_contexto_comun()
     context['active_tab'] = 'educacion'
-    # Recuerda que P. Académicos usa el modelo 'Educacion'
     context['productos_academicos'] = Educacion.objects.all().order_by('-fecha')
     return render(request, 'cv/educacion.html', context)
 
@@ -61,12 +63,21 @@ def garage(request):
     context['productos'] = Producto.objects.all()
     return render(request, 'cv/garage.html', context)
 
+# Vista dedicada a Cursos
+def cursos(request):
+    context = get_contexto_comun()
+    context['active_tab'] = 'cursos'
+    context['cursos'] = Curso.objects.all().order_by('-fecha')
+    # Usamos cursos_lista.html que extiende de base.html
+    return render(request, 'cv/cursos_lista.html', context)
+
 # --- VISTA GENERADOR DE PDF ---
 
 @xframe_options_exempt 
+@never_cache 
 def descargar_cv_pdf(request):
     if request.method == 'POST':
-        # 1. Capturamos qué casillas marcó el usuario
+        # Capturamos opciones (True si está marcado, False si no)
         opciones = {
             'incluir_perfil': request.POST.get('incluir_perfil') == 'on',
             'incluir_experiencia': request.POST.get('incluir_experiencia') == 'on',
@@ -74,34 +85,34 @@ def descargar_cv_pdf(request):
             'incluir_proyectos': request.POST.get('incluir_proyectos') == 'on',
             'incluir_academicos': request.POST.get('incluir_academicos') == 'on',
             'incluir_certificados': request.POST.get('incluir_certificados') == 'on',
+            'incluir_cursos': request.POST.get('incluir_cursos') == 'on', # <--- IMPORTANTE
         }
         
-        # 2. Preparamos el contexto
         context = get_contexto_comun()
         context['opciones'] = opciones
         context['MEDIA_ROOT'] = settings.MEDIA_ROOT
         
-        # 3. CARGAMOS TODOS LOS DATOS SIEMPRE (El HTML decidirá si mostrarlos u ocultarlos)
-        #    Esto soluciona el error de "si lo marco no aparece".
+        # Cargamos todos los datos (el template decide si mostrarlos u ocultarlos según 'opciones')
         context['experiencia'] = Experiencia.objects.all().order_by('-fecha_inicio')
         context['educacion'] = Educacion.objects.all().order_by('-fecha')
         context['proyectos'] = Proyecto.objects.all()
         context['certificados'] = Certificado.objects.all()
+        context['cursos'] = Curso.objects.all().order_by('-fecha') 
         
-        # Truco: Duplicamos educación para la variable 'productos_academicos'
         context['productos_academicos'] = context['educacion']
 
-        # 4. Renderizamos el HTML del PDF
         html = render_to_string('cv/pdf_template.html', context)
         response = HttpResponse(content_type='application/pdf')
         
-        # 5. Configuración para Vista Previa vs Descarga
         accion = request.POST.get('action', 'download') 
         tipo_visualizacion = 'inline' if accion == 'preview' else 'attachment'
         
         response['Content-Disposition'] = f'{tipo_visualizacion}; filename="mi_cv.pdf"'
         
-        # 6. Generar PDF
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        
         weasyprint.HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(response)
         return response
     

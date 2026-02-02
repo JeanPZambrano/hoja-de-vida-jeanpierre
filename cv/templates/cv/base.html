@@ -44,6 +44,9 @@
                     <li class="nav-item"><a class="nav-link {% if active_tab == 'experiencia' %}active{% endif %}" href="{% url 'experiencia' %}">Experiencia</a></li>
                     <li class="nav-item"><a class="nav-link {% if active_tab == 'educacion' %}active{% endif %}" href="{% url 'educacion' %}">P. Académicos</a></li>
                     <li class="nav-item"><a class="nav-link {% if active_tab == 'proyectos' %}active{% endif %}" href="{% url 'proyectos' %}">Proyectos</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link {% if active_tab == 'cursos' %}active{% endif %}" href="{% url 'cursos' %}">Cursos</a></li>
+                    
                     <li class="nav-item"><a class="nav-link {% if active_tab == 'certificados' %}active{% endif %}" href="{% url 'certificados' %}">Certificados</a></li>
                     <li class="nav-item"><a class="nav-link text-warning fw-bold {% if active_tab == 'garage' %}active{% endif %}" href="{% url 'garage' %}">⚡ Garage</a></li>
                 </ul>
@@ -73,12 +76,43 @@
 
                     <div class="modal-body p-4">
                         <div class="row g-3">
-                            <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" name="incluir_perfil" checked> Perfil</div></div>
-                            <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" name="incluir_experiencia" checked> Experiencia</div></div>
-                            <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" name="incluir_educacion" checked> Educación</div></div>
-                            <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" name="incluir_proyectos" checked> Proyectos</div></div>
-                            <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" name="incluir_academicos"> P. Académicos</div></div>
-                            <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" name="incluir_certificados"> Certificados</div></div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_perfil" value="on" checked> Perfil
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_experiencia" value="on" checked> Experiencia
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_educacion" value="on" checked> Educación
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_proyectos" value="on" checked> Proyectos
+                                </div>
+                            </div>
+                            
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_cursos" value="on" checked> Cursos
+                                </div>
+                            </div>
+                            
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_academicos" value="on"> P. Académicos
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="incluir_certificados" value="on"> Certificados
+                                </div>
+                            </div>
                         </div>
                     </div>
                     

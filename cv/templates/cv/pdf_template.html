@@ -3,170 +3,141 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CV - {{ perfil.nombre }} {{ perfil.apellido }}</title>
+    <title>CV - {{ perfil.nombre }}</title>
     <style>
-        @page { size: A4; margin: 0; }
-        :root { --primary-color: #10b981; --dark-text: #1f2937; --light-text: #6b7280; --bg-sidebar: #f3f4f6; --white: #ffffff; }
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5; color: var(--dark-text); margin: 0; padding: 0; background: var(--white); }
-        h1, h2, h3, h4, h5, h6 { margin-top: 0; font-weight: 700; }
-        a { color: var(--primary-color); text-decoration: none; }
-        .container { display: flex; flex-direction: row; min-height: 100vh; }
-        
-        /* SIDEBAR */
-        .sidebar { width: 32%; background-color: var(--bg-sidebar); padding: 30px 25px; color: var(--dark-text); border-right: 1px solid #e5e7eb; }
-        
-        /* MAIN CONTENT */
-        .main-content { width: 68%; padding: 35px 30px; background-color: var(--white); }
-        
-        /* ESTILOS DE PERFIL */
-        .profile-photo { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary-color); display: block; margin: 0 auto 25px auto; }
-        .photo-placeholder { width: 160px; height: 160px; border-radius: 50%; background: #e5e7eb; margin: 0 auto 25px auto; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 50px; border: 5px solid var(--primary-color); }
-        h1.name { font-size: 26px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; color: var(--primary-color); text-align: center; }
-        h2.profession { font-size: 16px; font-weight: 500; color: var(--light-text); text-align: center; margin-bottom: 30px; }
-        
-        /* CONTACTO */
-        .contact-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 13px; }
-        .contact-icon { color: var(--primary-color); margin-right: 10px; font-weight: bold; width: 20px; text-align: center; }
-        
-        /* TITULOS */
-        .section-title { font-size: 18px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 8px; margin-top: 30px; margin-bottom: 15px; }
-        .sidebar .section-title { margin-top: 0; border-color: #d1d5db; color: var(--dark-text); }
-        
-        /* ITEMS */
-        .job-item, .edu-item, .project-item { margin-bottom: 20px; page-break-inside: avoid; }
-        .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
-        .item-title { font-size: 15px; font-weight: 700; color: var(--dark-text); }
-        .item-subtitle { font-size: 13px; font-weight: 600; color: var(--primary-color); }
-        .item-date { font-size: 11px; color: var(--light-text); font-weight: 500; text-align: right; white-space: nowrap; }
-        .item-description { font-size: 13px; color: #4b5563; text-align: justify; margin-top: 5px; }
-        .tech-tag { display: inline-block; background: #e5e7eb; color: #374151; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: 3px; margin-top: 3px; font-weight: 600; }
+        @page {
+            size: A4;
+            margin: 1.5cm;
+            @bottom-right {
+                content: "Pág. " counter(page) " de " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.5; font-size: 11pt; }
+        h1, h2, h3 { color: #2c3e50; margin-bottom: 5px; }
+        h1 { font-size: 24pt; text-transform: uppercase; border-bottom: 2px solid #10b981; padding-bottom: 10px; }
+        h2 { font-size: 16pt; margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px; color: #10b981; text-transform: uppercase; }
+        h3 { font-size: 13pt; margin-top: 10px; margin-bottom: 0; }
+        p { margin: 2px 0 8px 0; }
+        .subtitle { font-size: 10pt; color: #666; font-weight: bold; }
+        .date { float: right; font-size: 10pt; color: #666; }
+        .contact-info { margin-bottom: 20px; font-size: 10pt; }
+        .section-content { margin-left: 10px; }
+        .badge { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 9pt; display: inline-block; margin-right: 5px; }
+        a { color: #10b981; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <div class="sidebar">
+    {% if opciones.incluir_perfil %}
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="margin:0;">{{ perfil.nombre }} {{ perfil.apellido }}</h1>
+        <div style="font-size: 14pt; color: #666; margin-bottom: 10px;">{{ perfil.profesion }}</div>
         
-        <h1 class="name">{{ perfil.nombre }}<br>{{ perfil.apellido }}</h1>
-
-        {% if opciones.incluir_perfil %}
-            
-            <h2 class="profession">{{ perfil.profesion }}</h2>
-
-            <div class="profile-photo-container">
-                {% if perfil.foto %}
-                    <img src="{{ perfil.foto.url }}" class="profile-photo">
-                {% else %}
-                    <div class="photo-placeholder">{{ perfil.nombre|slice:":1" }}</div>
-                {% endif %}
-            </div>
-
-            <div class="contact-info" style="margin-top: 30px;">
-                <div class="contact-item"><span class="contact-icon">✉</span><span>{{ perfil.email }}</span></div>
-                <div class="contact-item"><span class="contact-icon">📞</span><span>{{ perfil.telefono }}</span></div>
-                {% if perfil.ubicacion %}
-                <div class="contact-item"><span class="contact-icon">📍</span><span>{{ perfil.ubicacion }}</span></div>
-                {% endif %}
-                {% if perfil.dni %}
-                <div class="contact-item"><span class="contact-icon">🆔</span><span>{{ perfil.dni }}</span></div>
-                {% endif %}
-            </div>
-            
-            {% if perfil.resumen %}
-            <div style="margin-top: 30px;">
-                <h3 class="section-title">Perfil</h3>
-                <p class="item-description">{{ perfil.resumen }}</p>
-            </div>
-            {% endif %}
-
-        {% endif %} </div>
-
-
-    <div class="main-content">
-
-        {% if opciones.incluir_experiencia and experiencia %}
-        <h3 class="section-title mt-0">Experiencia Laboral</h3>
-        {% for exp in experiencia %}
-        <div class="job-item">
-            <div class="item-header">
-                <div>
-                    <div class="item-title">{{ exp.cargo }}</div>
-                    <div class="item-subtitle">{{ exp.empresa }}</div>
-                </div>
-                <div class="item-date">
-                    {{ exp.fecha_inicio|date:"M Y" }} - {% if exp.fecha_fin %}{{ exp.fecha_fin|date:"M Y" }}{% else %}Actualidad{% endif %}
-                </div>
-            </div>
-            <div class="item-description">{{ exp.descripcion|linebreaks }}</div>
+        <div class="contact-info">
+            {{ perfil.email }} | {{ perfil.telefono }} <br>
+            {{ perfil.ubicacion }}
+            {% if perfil.dni %} | DNI: {{ perfil.dni }}{% endif %}
         </div>
-        {% endfor %}
-        {% endif %}
-
-
-        {% if opciones.incluir_proyectos and proyectos %}
-        <h3 class="section-title">Proyectos</h3>
-        {% for pro in proyectos %}
-        <div class="project-item">
-             <div class="item-header">
-                <div class="item-title">{{ pro.titulo }}</div>
-                {% if pro.fecha %}<div class="item-date">{{ pro.fecha|date:"Y" }}</div>{% endif %}
-            </div>
-            <div class="item-description">{{ pro.descripcion|truncatewords:40 }}</div>
-            {% if pro.tecnologias %}
-            <div style="margin-top: 5px;">
-                {% for tech in pro.tecnologias.split %}
-                 <span class="tech-tag">{{ tech }}</span>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
-        {% endif %}
-
-
-        {% if opciones.incluir_educacion and educacion %}
-        <h3 class="section-title">Educación</h3>
-        {% for edu in educacion %}
-        <div class="edu-item">
-             <div class="item-header">
-                <div class="item-title">{{ edu.titulo }}</div>
-                {% if edu.fecha %}<div class="item-date">{{ edu.fecha|date:"Y" }}</div>{% endif %}
-            </div>
-            <div class="item-subtitle">{{ edu.institucion }}</div>
-            {% if edu.descripcion %}
-            <div class="item-description" style="font-style: italic;">{{ edu.descripcion }}</div>
-            {% endif %}
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        {% if opciones.incluir_academicos and productos_academicos %}
-        <h3 class="section-title">Productos Académicos</h3>
-        {% for prod in productos_academicos %}
-        <div class="edu-item">
-             <div class="item-header">
-                <div class="item-title">{{ prod.titulo }}</div>
-                {% if prod.fecha %}<div class="item-date">{{ prod.fecha|date:"Y" }}</div>{% endif %}
-            </div>
-            <div class="item-subtitle">{{ prod.institucion }}</div>
-            <div class="item-description">{{ prod.descripcion }}</div>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        {% if opciones.incluir_certificados and certificados %}
-        <h3 class="section-title">Certificaciones</h3>
-        <ul style="padding-left: 15px; margin-top: 0;">
-            {% for cert in certificados %}
-            <li style="margin-bottom: 5px; font-size: 13px; color: #4b5563;">
-                <strong>{{ cert.titulo }}</strong> - {{ cert.institucion }}
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
+        
+        <p style="text-align: justify; font-size: 10pt;">
+            {{ perfil.resumen }}
+        </p>
     </div>
-</div>
+    {% endif %}
+
+    {% if opciones.incluir_experiencia %}
+    <h2>Experiencia Laboral</h2>
+    <div class="section-content">
+        {% for exp in experiencia %}
+        <div style="margin-bottom: 15px; page-break-inside: avoid;">
+            <div class="date">
+                {{ exp.fecha_inicio|date:"M Y" }} - 
+                {% if exp.fecha_fin %}{{ exp.fecha_fin|date:"M Y" }}{% else %}Presente{% endif %}
+            </div>
+            <h3>{{ exp.cargo }}</h3>
+            <div class="subtitle">{{ exp.empresa }}</div>
+            <p>{{ exp.descripcion|linebreaksbr }}</p>
+        </div>
+        {% empty %}
+        <p style="color:#999;">Sin experiencia registrada.</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if opciones.incluir_educacion %}
+    <h2>Educación</h2>
+    <div class="section-content">
+        {% for edu in educacion %}
+        <div style="margin-bottom: 10px; page-break-inside: avoid;">
+            <div class="date">{{ edu.fecha|date:"Y" }}</div>
+            <h3>{{ edu.titulo }}</h3>
+            <div class="subtitle">{{ edu.institucion }}</div>
+            {% if edu.descripcion %}<p>{{ edu.descripcion }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if opciones.incluir_proyectos %}
+    <h2>Proyectos Destacados</h2>
+    <div class="section-content">
+        {% for pro in proyectos %}
+        <div style="margin-bottom: 15px; page-break-inside: avoid;">
+            <div class="date">{{ pro.fecha|date:"M Y" }}</div>
+            <h3>{{ pro.titulo }}</h3>
+            {% if pro.tecnologias %}
+            <div style="margin-bottom: 4px; color: #10b981; font-size: 9pt;">
+                Tecnologías: {{ pro.tecnologias }}
+            </div>
+            {% endif %}
+            <p>{{ pro.descripcion }}</p>
+            {% if pro.link %}
+            <div style="font-size: 9pt;"><a href="{{ pro.link }}">Ver proyecto online</a></div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if opciones.incluir_cursos %}
+    <h2>Cursos y Guías</h2>
+    <div class="section-content">
+        {% for curso in cursos %}
+        <div style="margin-bottom: 10px; page-break-inside: avoid;">
+            <div class="date">{{ curso.fecha|date:"M Y" }}</div>
+            <h3>{{ curso.titulo }}</h3>
+            <p>{{ curso.descripcion }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if opciones.incluir_certificados %}
+    <h2>Certificaciones</h2>
+    <div class="section-content">
+        <ul>
+        {% for cert in certificados %}
+            <li style="margin-bottom: 5px;">
+                <strong>{{ cert.titulo }}</strong> - {{ cert.institucion }} ({{ cert.fecha|date:"Y" }})
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if opciones.incluir_academicos %}
+    <h2>Productos Académicos</h2>
+    <div class="section-content">
+        {% for prod in productos_academicos %}
+        <div style="margin-bottom: 10px;">
+            <h3>{{ prod.titulo }}</h3>
+            <div class="subtitle">{{ prod.institucion }} - {{ prod.fecha|date:"Y" }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
 </body>
 </html>

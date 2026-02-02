@@ -1,0 +1,129 @@
+{% load static %}
+
+<div class="container my-5">
+    <div class="d-flex align-items-center mb-4">
+        <i class="fas fa-chalkboard-teacher fa-2x text-primary me-2"></i>
+        <h2 class="fw-bold mb-0">Mis Cursos</h2>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
+        {% for curso in cursos %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                
+                <div class="position-relative cursor-pointer" onclick="abrirModalCurso('{{ curso.pdf_archivo.url }}', '{{ curso.titulo }}')">
+                    {% if curso.vista_previa %}
+                        <img src="{{ curso.vista_previa.url }}" class="card-img-top object-fit-cover" alt="{{ curso.titulo }}" style="height: 200px;">
+                    {% else %}
+                        <div class="bg-light text-secondary d-flex flex-column align-items-center justify-content-center border-bottom" style="height: 200px;">
+                            <i class="bi bi-file-earmark-pdf fs-1 mb-2"></i>
+                            <span class="small fw-bold">Ver Documento</span>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-success shadow-sm">
+                            {{ curso.fecha|date:"M Y" }}
+                        </span>
+                    </div>
+                    
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center opacity-0 hover-overlay transition-all">
+                        <span class="badge bg-dark bg-opacity-75 fs-6 shadow"><i class="bi bi-eye me-1"></i> Leer PDF</span>
+                    </div>
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold text-dark">{{ curso.titulo }}</h5>
+                    <p class="card-text text-muted flex-grow-1 small">
+                        {{ curso.descripcion|truncatewords:25 }}
+                    </p>
+                    
+                    <hr class="my-3 text-muted opacity-25">
+
+                    <div class="d-grid gap-2">
+                        <div class="btn-group" role="group">
+                            <a href="{{ curso.pdf_archivo.url }}" download class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-download me-1"></i> Descargar
+                            </a>
+                            
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="abrirModalCurso('{{ curso.pdf_archivo.url }}', '{{ curso.titulo }}')">
+                                <i class="bi bi-eye me-1"></i> Vista Previa
+                            </button>
+                        </div>
+
+                        {% if curso.archivo_extra %}
+                        <a href="{{ curso.archivo_extra.url }}" download class="btn btn-light btn-sm text-success border-success">
+                            <i class="bi bi-file-archive me-1"></i> Material Extra
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info border-0 shadow-sm rounded-4">
+                <i class="bi bi-info-circle me-2"></i> No hay cursos publicados todavía.
+            </div>
+        </div>
+        {% endfor %}
+        
+    </div>
+</div>
+
+<div class="modal fade" id="cursoPdfModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" style="height: 90vh;">
+        <div class="modal-content border-0 shadow-lg rounded-4 h-100">
+            <div class="modal-header bg-dark text-white border-0 py-2">
+                <h6 class="modal-title fw-bold text-truncate" id="cursoModalTitle">Vista Previa</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 bg-secondary position-relative">
+                <div class="position-absolute top-50 start-50 translate-middle text-white z-0">
+                    <div class="spinner-border" role="status"></div>
+                </div>
+                <iframe id="cursoPdfFrame" class="w-100 h-100 border-0 position-relative z-1" style="min-height: 500px;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalCurso(urlPdf, titulo) {
+        // 1. Asignar la URL al iframe
+        const iframe = document.getElementById('cursoPdfFrame');
+        iframe.src = urlPdf;
+        
+        // 2. Poner el título
+        document.getElementById('cursoModalTitle').textContent = titulo;
+        
+        // 3. Abrir el modal
+        const modal = new bootstrap.Modal(document.getElementById('cursoPdfModal'));
+        modal.show();
+    }
+    
+    // Limpiar el iframe al cerrar para detener descargas o audios
+    document.getElementById('cursoPdfModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('cursoPdfFrame').src = '';
+    });
+</script>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    
+    /* Efecto al pasar el mouse sobre la imagen (o el placeholder) */
+    .hover-overlay:hover {
+        opacity: 1 !important;
+        cursor: pointer;
+    }
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>

@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError  # <--- AGREGA ESTA LÍNEA
+from django.core.exceptions import ValidationError
 
 class Perfil(models.Model):
     nombre = models.CharField(max_length=100)
@@ -35,11 +35,8 @@ class Experiencia(models.Model):
     def __str__(self):
         return f"{self.cargo} en {self.empresa}"
 
-    # --- AQUÍ ESTÁ LA VALIDACIÓN MÁGICA ---
     def clean(self):
         super().clean()
-        
-        # 1. Validar que la Fecha de Inicio no sea mayor que la Fecha de Fin
         if self.fecha_inicio and self.fecha_fin:
             if self.fecha_inicio > self.fecha_fin:
                 raise ValidationError("⛔ Error: La fecha de inicio no puede ser posterior a la fecha de fin.")
@@ -48,19 +45,9 @@ class Educacion(models.Model):
     titulo = models.CharField(max_length=100)
     institucion = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción corta")
-    
-    # --- CAMBIO: Agregamos el campo FECHA ---
     fecha = models.DateField(null=True, blank=True, verbose_name="Fecha de Finalización")
 
     class Meta:
-        verbose_name = "Producto Académico"
-        verbose_name_plural = "Productos Académicos"
-
-    def __str__(self):
-        return self.titulo
-
-    class Meta:
-        # Aquí se mantiene el nombre que pediste para el Admin
         verbose_name = "Producto Académico"
         verbose_name_plural = "Productos Académicos"
 
@@ -71,10 +58,7 @@ class Proyecto(models.Model):
     titulo = models.CharField(max_length=100)
     subtitulo = models.CharField(max_length=150, blank=True, null=True)
     descripcion = models.TextField()
-    
-    # --- CAMBIO IMPORTANTE: Campo fecha agregado ---
     fecha = models.DateField(null=True, blank=True, verbose_name="Fecha de Realización")
-    
     tecnologias = models.CharField(max_length=200, blank=True, null=True)
     link = models.URLField(blank=True, null=True)
     imagen = models.ImageField(upload_to='proyectos/', blank=True, null=True)
@@ -99,8 +83,10 @@ class Certificado(models.Model):
     def __str__(self):
         return self.titulo
 
+# En models.py, busca la clase Producto y agrégale esto:
+
 class Producto(models.Model):
-    # Opciones para el estado del producto
+    # ... (tus campos existentes) ...
     ESTADOS = [
         ('Nuevo', 'Nuevo / Sellado'),
         ('Como Nuevo', 'Como Nuevo (10/10)'),
@@ -111,17 +97,44 @@ class Producto(models.Model):
 
     titulo = models.CharField(max_length=200)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    
-    # --- NUEVOS CAMPOS ---
     estado = models.CharField(max_length=50, choices=ESTADOS, default='Buen Estado', verbose_name="Condición")
     descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción detallada")
-    
     disponible = models.BooleanField(default=True)
     imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
 
     class Meta:
         verbose_name = "Producto de Venta"
         verbose_name_plural = "Garage (Ventas)"
+
+    def __str__(self):
+        return self.titulo
+
+    # --- AGREGAR ESTA VALIDACIÓN ---
+    def clean(self):
+        super().clean()
+        # Validar que el precio no sea negativo
+        if self.precio < 0:
+            raise ValidationError("⛔ Error: El precio no puede ser negativo (ej. -10). Por favor coloca 0 o un número positivo.")
+
+# --- NUEVO MODELO CURSO ---
+# En tu archivo models.py
+
+class Curso(models.Model):
+    titulo = models.CharField(max_length=200, verbose_name="Título del Curso")
+    descripcion = models.TextField(verbose_name="Descripción")
+    fecha = models.DateField(verbose_name="Fecha de realización")
+    
+    pdf_archivo = models.FileField(upload_to='cursos/pdfs/', verbose_name="PDF del Curso")
+    
+    # --- CAMBIO AQUÍ: Agregamos null=True y blank=True ---
+    vista_previa = models.ImageField(upload_to='cursos/previews/', verbose_name="Imagen de Vista Previa", null=True, blank=True)
+    
+    archivo_extra = models.FileField(upload_to='cursos/extras/', blank=True, null=True, verbose_name="Archivo Extra")
+
+    class Meta:
+        verbose_name = "Curso"
+        verbose_name_plural = "Cursos"
+        ordering = ['-fecha']
 
     def __str__(self):
         return self.titulo
