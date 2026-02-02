@@ -35,7 +35,6 @@ class Perfil(models.Model):
                 raise ValidationError(f"⛔ Error: El DNI {self.dni} ya está registrado en otro perfil.")
 
 class Experiencia(models.Model):
-    # Relación "suave" (null=True) para no romper datos viejos
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='experiencias', verbose_name="Perfil Asociado", null=True, blank=True)
     
     cargo = models.CharField(max_length=100)
@@ -43,6 +42,10 @@ class Experiencia(models.Model):
     descripcion = models.TextField()
     fecha_inicio = models.DateField(blank=True, null=True)
     fecha_fin = models.DateField(blank=True, null=True)
+
+    # --- NUEVOS CAMPOS ---
+    logo = models.ImageField(upload_to='experiencia/logos/', null=True, blank=True, verbose_name="Logo Empresa / Imagen")
+    archivo = models.FileField(upload_to='experiencia/archivos/', null=True, blank=True, verbose_name="Constancia/Archivo (PDF)")
 
     class Meta:
         verbose_name = "Experiencia"
@@ -56,7 +59,6 @@ class Experiencia(models.Model):
         if self.fecha_inicio and self.fecha_fin:
             if self.fecha_inicio > self.fecha_fin:
                 raise ValidationError("⛔ Error: La fecha de inicio no puede ser posterior a la fecha de fin.")
-
 class Educacion(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='educacion', verbose_name="Perfil Asociado", null=True, blank=True)
     
